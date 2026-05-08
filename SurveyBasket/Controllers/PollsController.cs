@@ -10,27 +10,33 @@ public class PollsController(IPollService pollService) : ControllerBase
     public IActionResult GetAll()
     {
         IEnumerable<Poll> _polls = _pollService.GetAll();
-        return Ok(_polls);
+        IEnumerable<PollResponse> response = _polls.Adapt<IEnumerable<PollResponse>>();
+        return Ok(response);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
         Poll? _poll = _pollService.Get(id);
-        return _poll is null ? NotFound() : Ok(_poll);
+        if (_poll is null)
+        {
+            return NotFound();
+        }
+        PollResponse response = _poll.Adapt<PollResponse>();
+        return Ok(response);
     }
 
     [HttpPost("")]
-    public IActionResult Add(Poll poll)
+    public IActionResult Add(CreatePollRequest request)
     {
-        Poll _poll = _pollService.Add(poll);
-        return CreatedAtAction(nameof(Get), new { id = poll.Id }, _poll);
+        Poll _poll = _pollService.Add(request.Adapt<Poll>());
+        return CreatedAtAction(nameof(Get), new { id = _poll.Id }, _poll);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, Poll poll)
+    public IActionResult Update(int id, CreatePollRequest request)
     {
-        bool IsUpdated = _pollService.Update(id, poll);
+        bool IsUpdated = _pollService.Update(id, request.Adapt<Poll>());
         return IsUpdated ? NoContent() : NotFound();
     }
 

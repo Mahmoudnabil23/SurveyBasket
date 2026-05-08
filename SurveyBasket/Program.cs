@@ -1,4 +1,3 @@
-
 namespace SurveyBasket;
 
 public class Program
@@ -16,7 +15,13 @@ public class Program
         //Reister services here
         builder.Services.AddScoped<IPollService, PollService>();
 
+
+        TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
+        config.Scan(Assembly.GetExecutingAssembly());
+        builder.Services.AddSingleton<IMapper>(new Mapper(config));
+
         var app = builder.Build();
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
