@@ -1,6 +1,8 @@
-﻿global using Mapster;
+﻿global using FluentValidation;
+global using Mapster;
 global using MapsterMapper;
 global using Microsoft.AspNetCore.Mvc;
+global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 global using SurveyBasket.Contracts.Requests;
 global using SurveyBasket.Contracts.Responses;
 global using SurveyBasket.Models;
