@@ -6,7 +6,7 @@ public class MappingConfigurations : IRegister
     {
         config.NewConfig<Poll, PollResponse>()
             .Map(dest => dest.Description, src => src.Summary);
-        config.NewConfig<CreatePollRequest, Poll>()
+        config.NewConfig<PollRequest, Poll>()
             .Map(dest => dest.Summary, src => src.Description);
     }
 }

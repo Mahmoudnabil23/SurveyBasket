@@ -27,7 +27,7 @@ public class PollsController(IPollService pollService) : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Add([FromBody] CreatePollRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Add([FromBody] PollRequest request, CancellationToken cancellationToken)
     {
         Poll? _poll = await _pollService.Add(request.Adapt<Poll>(), cancellationToken);
         if (_poll is null)
@@ -38,7 +38,7 @@ public class PollsController(IPollService pollService) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreatePollRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PollRequest request, CancellationToken cancellationToken)
     {
         bool IsUpdated = await _pollService.Update(id, request.Adapt<Poll>(), cancellationToken);
         return IsUpdated ? NoContent() : NotFound();
