@@ -7,17 +7,17 @@ public class PollsController(IPollService pollService) : ControllerBase
     private readonly IPollService _pollService = pollService;
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
-        IEnumerable<Poll> _polls = await _pollService.GetAllAsync();
+        IEnumerable<Poll> _polls = await _pollService.GetAllAsync(cancellationToken);
         IEnumerable<PollResponse> response = _polls.Adapt<IEnumerable<PollResponse>>();
         return Ok(response);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
-        Poll? _poll = await _pollService.GetByIdAsync(id);
+        Poll? _poll = await _pollService.GetByIdAsync(id, cancellationToken);
         if (_poll is null)
         {
             return NotFound();
@@ -27,9 +27,9 @@ public class PollsController(IPollService pollService) : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<IActionResult> Add([FromBody] CreatePollRequest request)
+    public async Task<IActionResult> Add([FromBody] CreatePollRequest request, CancellationToken cancellationToken)
     {
-        Poll? _poll = await _pollService.Add(request.Adapt<Poll>());
+        Poll? _poll = await _pollService.Add(request.Adapt<Poll>(), cancellationToken);
         if (_poll is null)
         {
             return BadRequest();
@@ -38,16 +38,16 @@ public class PollsController(IPollService pollService) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreatePollRequest request)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreatePollRequest request, CancellationToken cancellationToken)
     {
-        bool IsUpdated = await _pollService.Update(id, request.Adapt<Poll>());
+        bool IsUpdated = await _pollService.Update(id, request.Adapt<Poll>(), cancellationToken);
         return IsUpdated ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        bool IsDeleted = await _pollService.Delete(id);
+        bool IsDeleted = await _pollService.Delete(id, cancellationToken);
         return IsDeleted ? NoContent() : NotFound();
     }
 }

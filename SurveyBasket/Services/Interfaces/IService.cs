@@ -2,10 +2,10 @@
 
 public interface IService<T> where T : class
 {
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T?> GetByIdAsync(object id);
-    Task<T?> Add(T poll);
-    Task<bool> Update(int id, T poll);
-    Task<bool> Delete(int id);
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
+    Task<T?> GetByIdAsync(object id, CancellationToken cancellationToken);
+    Task<T?> Add(T poll, CancellationToken cancellationToken);
+    Task<bool> Update(int id, T poll, CancellationToken cancellationToken);
+    Task<bool> Delete(int id, CancellationToken cancellationToken);
 
 }
