@@ -7,17 +7,17 @@ public class PollsController(IPollService pollService) : ControllerBase
     private readonly IPollService _pollService = pollService;
 
     [HttpGet("")]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        IEnumerable<Poll> _polls = _pollService.GetAll();
+        IEnumerable<Poll> _polls = await _pollService.GetAllAsync();
         IEnumerable<PollResponse> response = _polls.Adapt<IEnumerable<PollResponse>>();
         return Ok(response);
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        Poll? _poll = _pollService.Get(id);
+        Poll? _poll = await _pollService.GetByIdAsync(id);
         if (_poll is null)
         {
             return NotFound();
@@ -27,23 +27,27 @@ public class PollsController(IPollService pollService) : ControllerBase
     }
 
     [HttpPost("")]
-    public IActionResult Add(CreatePollRequest request)
+    public async Task<IActionResult> Add([FromBody] CreatePollRequest request)
     {
-        Poll _poll = _pollService.Add(request.Adapt<Poll>());
-        return CreatedAtAction(nameof(Get), new { id = _poll.Id }, _poll);
+        Poll? _poll = await _pollService.Add(request.Adapt<Poll>());
+        if (_poll is null)
+        {
+            return BadRequest();
+        }
+        return CreatedAtAction(nameof(GetById), new { id = _poll.Id }, _poll);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Update(int id, CreatePollRequest request)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreatePollRequest request)
     {
-        bool IsUpdated = _pollService.Update(id, request.Adapt<Poll>());
+        bool IsUpdated = await _pollService.Update(id, request.Adapt<Poll>());
         return IsUpdated ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        bool IsDeleted = _pollService.Delete(id);
+        bool IsDeleted = await _pollService.Delete(id);
         return IsDeleted ? NoContent() : NotFound();
     }
 }
