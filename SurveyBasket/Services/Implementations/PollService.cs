@@ -45,4 +45,15 @@ public class PollService(IPollRepository pollRepository) : IPollService
         return await _pollRepo.SaveAsync(cancellationToken);
 
     }
+
+    public async Task<bool> TogglePublishStatus(int id, CancellationToken cancellationToken)
+    {
+        Poll? _poll = await _pollRepo.GetByIdAsync(id, cancellationToken);
+        if (_poll is null)
+        {
+            return false;
+        }
+        _poll.IsPublished = !_poll.IsPublished;
+        return await _pollRepo.SaveAsync(cancellationToken);
+    }
 }

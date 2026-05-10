@@ -50,4 +50,11 @@ public class PollsController(IPollService pollService) : ControllerBase
         bool IsDeleted = await _pollService.Delete(id, cancellationToken);
         return IsDeleted ? NoContent() : NotFound();
     }
+
+    [HttpPut("{id:int}/toggle")]
+    public async Task<IActionResult> TogglePublishStatus([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        bool IsToggled = await _pollService.TogglePublishStatus(id, cancellationToken);
+        return IsToggled ? NoContent() : NotFound();
+    }
 }
